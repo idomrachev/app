@@ -1,5 +1,5 @@
 """
-Django ASGI/WSGI entry point for uvicorn
+Django ASGI entry point for uvicorn
 """
 import os
 import sys
@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'damage_project.settings')
 
-from django.core.wsgi import get_wsgi_application
+from django.core.asgi import get_asgi_application
 
 # For uvicorn compatibility
-app = get_wsgi_application()
+app = get_asgi_application()
