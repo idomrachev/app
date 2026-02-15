@@ -1,0 +1,136 @@
+{
+  "identity": {
+    "persona": "E1",
+    "philosophy": "Anti-AI Designer",
+    "principles": [
+      "Fusion over Imitation: Mix Swiss Print Design with Automotive Utility.",
+      "Emotion First: Trust and Efficiency (Clinical Red/White).",
+      "Content is King: Data clarity over decoration.",
+      "Contrast: High contrast Red/White for readability and urgency control."
+    ]
+  },
+  "technical_stack": {
+    "framework": "Django (Python)",
+    "templating": "Django HTML Templates (Server-Side Rendering)",
+    "styling": "Tailwind CSS (via CDN or Static)",
+    "js": "Vanilla JS or Alpine.js (for interactions like photo preview)",
+    "icons": "Heroicons (SVG) or FontAwesome (CDN)",
+    "note": "IGNORE existing React frontend. Build a pure Django app."
+  },
+  "design_system": {
+    "theme": "Swiss Red (Archetype 4 Variant)",
+    "colors": {
+      "primary": "#DC2626",
+      "primary_hover": "#B91C1C",
+      "secondary": "#FFFFFF",
+      "background": "#F9FAFB",
+      "surface": "#FFFFFF",
+      "text_main": "#111827",
+      "text_muted": "#6B7280",
+      "border": "#E5E7EB",
+      "error": "#EF4444",
+      "success": "#10B981"
+    },
+    "typography": {
+      "headings": {
+        "font_family": "Chivo, sans-serif",
+        "weights": ["700", "900"],
+        "tracking": "tight"
+      },
+      "body": {
+        "font_family": "Inter, sans-serif",
+        "weights": ["400", "500"]
+      }
+    },
+    "spacing": {
+      "container_padding": "p-4 md:p-6",
+      "section_gap": "gap-6",
+      "element_gap": "gap-4"
+    },
+    "radius": {
+      "card": "rounded-xl",
+      "button": "rounded-lg",
+      "input": "rounded-lg"
+    },
+    "shadows": {
+      "card": "shadow-sm",
+      "floating": "shadow-lg"
+    }
+  },
+  "components": {
+    "container": {
+      "class": "min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900"
+    },
+    "mobile_wrapper": {
+      "class": "w-full max-w-md mx-auto bg-white min-h-screen shadow-xl overflow-hidden relative"
+    },
+    "header": {
+      "class": "sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center",
+      "logo_class": "text-xl font-black text-red-600 tracking-tighter uppercase font-heading"
+    },
+    "button_primary": {
+      "tag": "button",
+      "class": "w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-lg transition-all active:scale-95 shadow-md shadow-red-200"
+    },
+    "button_secondary": {
+      "tag": "button",
+      "class": "w-full bg-white border-2 border-red-100 hover:border-red-600 text-red-600 font-bold py-3 px-4 rounded-lg transition-colors"
+    },
+    "input_field": {
+      "class": "w-full bg-gray-50 border border-gray-200 text-gray-900 text-base rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 block p-3 transition-all placeholder-gray-400"
+    },
+    "card": {
+      "class": "bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
+    },
+    "bottom_nav": {
+      "class": "fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex justify-around items-center max-w-md mx-auto z-40"
+    }
+  },
+  "layouts": {
+    "auth_screen": {
+      "structure": "Centered content, Logo top, Phone input middle, Button bottom",
+      "bg_style": "bg-white relative overflow-hidden"
+    },
+    "dashboard_screen": {
+      "structure": "Header (Logo), List of 'My Calculations' (Cards), Floating Action Button (FAB) or Header Action to create new"
+    },
+    "form_screen": {
+      "structure": "Stepper header, Scrollable form content, Sticky bottom Submit button"
+    }
+  },
+  "assets": {
+    "images": [
+      {
+        "category": "hero_bg",
+        "url": "https://images.unsplash.com/photo-1622244587259-4c8e622141ec?auto=format&fit=crop&w=800&q=80",
+        "desc": "Minimalist white car detail for auth background"
+      },
+      {
+        "category": "empty_state",
+        "url": "https://images.unsplash.com/photo-1570432215913-b66fff4a50a4?auto=format&fit=crop&w=800&q=80",
+        "desc": "Clean car wireframe for empty lists"
+      }
+    ],
+    "icons": {
+      "source": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css",
+      "usage": "<i class='fa-solid fa-car'></i>"
+    }
+  },
+  "universal_guidelines": [
+    "Mobile First: Always wrap content in 'max-w-md mx-auto' to simulate an app interface.",
+    "Thumb Zone: Place primary actions (Save, Submit, Continue) at the bottom of the screen.",
+    "Feedback: Use specific Django messages for success/error (e.g., 'SMS Sent', 'Calculation Saved').",
+    "Typography: Use 'Chivo' (Google Font) for headings to give it an automotive/industrial feel. Use 'Inter' for UI text.",
+    "Spacing: Use 'p-6' and 'gap-4' generously. Don't crowd the inputs.",
+    "Testing: Add 'data-testid' to all inputs and buttons."
+  ],
+  "instructions_to_main_agent": [
+    "1. IGNORE the existing '/app/frontend' React structure. It is irrelevant for this task.",
+    "2. SETUP Django: Create a new Django project in '/app/backend' or root. Install 'django', 'django-crispy-forms', 'crispy-tailwind'.",
+    "3. TEMPLATES: Create a '/templates' directory and configure Django settings to use it.",
+    "4. BASE TEMPLATE: Create 'base.html' with Tailwind CDN: <script src='https://cdn.tailwindcss.com'></script> and Google Fonts.",
+    "5. AUTH: Implement simple view-based auth with session. Mock the SMS verification (e.g., code is always '1234' or printed to console).",
+    "6. FORM: Use ModelForm for the Damage Assessment. Use 'crispy_forms_tags' to render it with Tailwind classes OR manually render fields with the classes defined in 'components'.",
+    "7. STATIC: Use 'whitenoise' if needed, or just serve media files (uploaded photos) using standard Django development settings."
+  ]
+}
