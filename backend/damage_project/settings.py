@@ -14,6 +14,24 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-damage-assessment-app
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 ALLOWED_HOSTS = ['*']
 
+# CSRF Settings for proxy environment
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.emergentagent.com',
+    'https://*.preview.emergentagent.com',
+    'http://localhost:3000',
+    'http://localhost:8001',
+]
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# Trust proxy headers
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
