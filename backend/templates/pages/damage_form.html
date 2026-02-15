@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block title %}Новая заявка - Оценка ущерба{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex justify-between items-center">
+    <h1 class="font-heading text-xl font-black text-gray-900 tracking-tight">
+        ОЦЕНКА<span class="text-red-600">PRO</span>
+    </h1>
+    <a href="{% url 'logout' %}" class="text-gray-400 hover:text-red-600 transition-colors" data-testid="logout-btn">
+        <i class="fa-solid fa-right-from-bracket text-xl"></i>
+    </a>
+</header>
+
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto no-scrollbar px-4 py-6 pb-24">
+    <h2 class="font-heading text-xl font-bold text-gray-900 mb-6" data-testid="form-title">
+        <i class="fa-solid fa-file-circle-plus text-red-600 mr-2"></i>
+        Новая заявка
+    </h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="space-y-6" data-testid="damage-form">
+        {% csrf_token %}
+        
+        <!-- VIN Input -->
+        <div>
+            <label for="vin" class="block text-sm font-medium text-gray-700 mb-2">
+                VIN-номер автомобиля <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <i class="fa-solid fa-barcode"></i>
+                </span>
+                <input 
+                    type="text" 
+                    id="vin" 
+                    name="vin" 
+                    maxlength="17"
+                    placeholder="Например: WVWZZZ3CZWE123456"
+                    data-testid="vin-input"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-base rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 block pl-12 pr-4 py-4 transition-all placeholder-gray-400 uppercase"
+                    required
+                >
+            </div>
+            <p class="mt-1 text-xs text-gray-500">
+                17 символов, находится на кузове или в документах
+            </p>
+        </div>
+        
+        <!-- Photo Upload -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Фотографии повреждений <span class="text-red-500">*</span>
+            </label>
+            
+            <!-- Upload Area -->
+            <div 
+                id="upload-area"
+                class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-red-400 transition-colors cursor-pointer bg-gray-50"
+                data-testid="upload-area"
+            >
+                <input 
+                    type="file" 
+                    id="photos" 
+                    name="photos" 
+                    multiple 
+                    accept="image/*"
+                    capture="environment"
+                    data-testid="photos-input"
+                    class="hidden"
+                >
+                <div class="space-y-3">
+                    <div class="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-camera text-2xl text-red-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-700">Нажмите для загрузки</p>
+                        <p class="text-sm text-gray-500">или перетащите файлы</p>
+                    </div>
+                    <div class="flex justify-center gap-4 text-xs text-gray-400">
+                        <span><i class="fa-solid fa-image mr-1"></i>JPG, PNG</span>
+                        <span><i class="fa-solid fa-expand mr-1"></i>До 10 МБ</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview Container -->
+            <div id="preview-container" class="mt-4 grid grid-cols-3 gap-3 hidden" data-testid="preview-container">
+            </div>
+        </div>
+        
+        <!-- Description -->
+        <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                Описание повреждений
+            </label>
+            <textarea 
+                id="description" 
+                name="description" 
+                rows="4"
+                placeholder="Опишите характер повреждений, обстоятельства ДТП..."
+                data-testid="description-input"
+                class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-base rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 block px-4 py-3 transition-all placeholder-gray-400 resize-none"
+            ></textarea>
+        </div>
+        
+        <!-- Submit Button -->
+        <button 
+            type="submit" 
+            data-testid="submit-damage-btn"
+            class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-xl transition-all btn-active shadow-lg shadow-red-200 text-lg flex items-center justify-center gap-2"
+        >
+            <i class="fa-solid fa-paper-plane"></i>
+            Отправить заявку
+        </button>
+    </form>
+</div>
+
+<!-- Bottom Navigation -->
+{% endblock %}
+
+{% block bottom_nav %}
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 max-w-md mx-auto z-40" data-testid="bottom-nav">
+    <div class="flex justify-around items-center">
+        <a href="{% url 'damage_form' %}" class="flex flex-col items-center py-2 px-4 text-red-600" data-testid="nav-new">
+            <i class="fa-solid fa-plus-circle text-xl mb-1"></i>
+            <span class="text-xs font-medium">Новая</span>
+        </a>
+        <a href="{% url 'calculations' %}" class="flex flex-col items-center py-2 px-4 text-gray-400 hover:text-red-600 transition-colors" data-testid="nav-calculations">
+            <i class="fa-solid fa-list-check text-xl mb-1"></i>
+            <span class="text-xs font-medium">Расчёты</span>
+        </a>
+        <a href="{% url 'contacts' %}" class="flex flex-col items-center py-2 px-4 text-gray-400 hover:text-red-600 transition-colors" data-testid="nav-contacts">
+            <i class="fa-solid fa-phone text-xl mb-1"></i>
+            <span class="text-xs font-medium">Контакты</span>
+        </a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const uploadArea = document.getElementById('upload-area');
+    const photosInput = document.getElementById('photos');
+    const previewContainer = document.getElementById('preview-container');
+    
+    // Click to upload
+    uploadArea.addEventListener('click', () => photosInput.click());
+    
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('border-red-500', 'bg-red-50');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('border-red-500', 'bg-red-50');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('border-red-500', 'bg-red-50');
+        photosInput.files = e.dataTransfer.files;
+        updatePreview();
+    });
+    
+    // File selection
+    photosInput.addEventListener('change', updatePreview);
+    
+    function updatePreview() {
+        const files = photosInput.files;
+        previewContainer.innerHTML = '';
+        
+        if (files.length > 0) {
+            previewContainer.classList.remove('hidden');
+            
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.className = 'relative aspect-square rounded-lg overflow-hidden bg-gray-100';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" class="w-full h-full object-cover" alt="Preview ${index + 1}">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <span class="text-white text-xs">${file.name.slice(0, 15)}...</span>
+                        </div>
+                    `;
+                    previewContainer.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            uploadArea.querySelector('.space-y-3').innerHTML = `
+                <div class="w-12 h-12 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-check text-xl text-green-600"></i>
+                </div>
+                <p class="font-medium text-green-700">${files.length} файл(ов) выбрано</p>
+                <p class="text-sm text-gray-500">Нажмите, чтобы изменить</p>
+            `;
+        } else {
+            previewContainer.classList.add('hidden');
+        }
+    }
+    
+    // VIN uppercase
+    document.getElementById('vin').addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    });
+</script>
+{% endblock %}
