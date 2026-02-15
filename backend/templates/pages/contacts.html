@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Контакты - Оценка ущерба{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex justify-between items-center">
+    <h1 class="font-heading text-xl font-black text-gray-900 tracking-tight">
+        ОЦЕНКА<span class="text-red-600">PRO</span>
+    </h1>
+    <a href="{% url 'logout' %}" class="text-gray-400 hover:text-red-600 transition-colors" data-testid="logout-btn">
+        <i class="fa-solid fa-right-from-bracket text-xl"></i>
+    </a>
+</header>
+
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto no-scrollbar px-4 py-6 pb-24">
+    <h2 class="font-heading text-xl font-bold text-gray-900 mb-6" data-testid="contacts-title">
+        <i class="fa-solid fa-phone text-red-600 mr-2"></i>
+        Контакты
+    </h2>
+    
+    <div class="space-y-4">
+        <!-- Phone Card -->
+        <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm" data-testid="phone-card">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-phone text-xl text-red-600"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900 mb-1">Телефон</h3>
+                    <a href="tel:+74951234567" class="text-lg font-bold text-red-600 hover:underline">
+                        +7 (495) 123-45-67
+                    </a>
+                    <p class="text-sm text-gray-500 mt-1">Пн-Пт: 9:00 - 18:00</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Address Card -->
+        <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm" data-testid="address-card">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-location-dot text-xl text-red-600"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900 mb-1">Адрес</h3>
+                    <p class="text-gray-700">
+                        г. Москва, ул. Автомобильная, д. 15<br>
+                        БЦ "АвтоПлаза", офис 301
+                    </p>
+                    <a href="https://maps.google.com" target="_blank" class="inline-flex items-center gap-1 text-sm text-red-600 hover:underline mt-2">
+                        <i class="fa-solid fa-map mr-1"></i>
+                        Показать на карте
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Working Hours -->
+        <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm" data-testid="hours-card">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-clock text-xl text-red-600"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900 mb-2">Режим работы</h3>
+                    <div class="space-y-1 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Понедельник - Пятница</span>
+                            <span class="font-semibold text-gray-900">9:00 - 18:00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Суббота</span>
+                            <span class="font-semibold text-gray-900">10:00 - 15:00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Воскресенье</span>
+                            <span class="font-semibold text-red-600">Выходной</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Support Info -->
+        <div class="bg-gradient-to-r from-red-600 to-red-700 rounded-xl p-5 text-white shadow-lg" data-testid="support-card">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-headset text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-1">Нужна помощь?</h3>
+                    <p class="text-sm text-red-100">
+                        Наши специалисты готовы ответить<br>на ваши вопросы
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom_nav %}
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 max-w-md mx-auto z-40" data-testid="bottom-nav">
+    <div class="flex justify-around items-center">
+        <a href="{% url 'damage_form' %}" class="flex flex-col items-center py-2 px-4 text-gray-400 hover:text-red-600 transition-colors" data-testid="nav-new">
+            <i class="fa-solid fa-plus-circle text-xl mb-1"></i>
+            <span class="text-xs font-medium">Новая</span>
+        </a>
+        <a href="{% url 'calculations' %}" class="flex flex-col items-center py-2 px-4 text-gray-400 hover:text-red-600 transition-colors" data-testid="nav-calculations">
+            <i class="fa-solid fa-list-check text-xl mb-1"></i>
+            <span class="text-xs font-medium">Расчёты</span>
+        </a>
+        <a href="{% url 'contacts' %}" class="flex flex-col items-center py-2 px-4 text-red-600" data-testid="nav-contacts">
+            <i class="fa-solid fa-phone text-xl mb-1"></i>
+            <span class="text-xs font-medium">Контакты</span>
+        </a>
+    </div>
+</nav>
+{% endblock %}
