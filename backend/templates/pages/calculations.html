@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block title %}Мои расчёты - Оценка ущерба{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex justify-between items-center">
+    <h1 class="font-heading text-xl font-black text-gray-900 tracking-tight">
+        ОЦЕНКА<span class="text-red-600">PRO</span>
+    </h1>
+    <a href="{% url 'logout' %}" class="text-gray-400 hover:text-red-600 transition-colors" data-testid="logout-btn">
+        <i class="fa-solid fa-right-from-bracket text-xl"></i>
+    </a>
+</header>
+
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto no-scrollbar px-4 py-6 pb-24">
+    <h2 class="font-heading text-xl font-bold text-gray-900 mb-6" data-testid="calculations-title">
+        <i class="fa-solid fa-list-check text-red-600 mr-2"></i>
+        Мои расчёты
+    </h2>
+    
+    {% if assessments %}
+    <div class="space-y-4" data-testid="assessments-list">
+        {% for assessment in assessments %}
+        <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow" data-testid="assessment-card-{{ forloop.counter }}">
+            <!-- Card Header -->
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <p class="text-xs text-gray-500 mb-1">
+                        <i class="fa-regular fa-calendar mr-1"></i>
+                        {{ assessment.created_at|date:"d.m.Y H:i" }}
+                    </p>
+                    <p class="font-mono font-bold text-gray-900 text-sm">
+                        VIN: {{ assessment.vin }}
+                    </p>
+                </div>
+                <span class="px-3 py-1 text-xs font-semibold rounded-full
+                    {% if assessment.status == 'completed' %}bg-green-100 text-green-700
+                    {% elif assessment.status == 'processing' %}bg-yellow-100 text-yellow-700
+                    {% else %}bg-gray-100 text-gray-600{% endif %}">
+                    {% if assessment.status == 'completed' %}Готово
+                    {% elif assessment.status == 'processing' %}В работе
+                    {% else %}Ожидает{% endif %}
+                </span>
+            </div>
+            
+            {% if assessment.description %}
+            <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ assessment.description }}</p>
+            {% endif %}
+            
+            <!-- Calculation Data (if exists) -->
+            {% if assessment.calculation %}
+            <div class="bg-gray-50 rounded-lg p-3 mt-3 space-y-2">
+                <!-- Parts Summary -->
+                {% if assessment.calculation.parts.all %}
+                <div class="text-sm">
+                    <p class="font-semibold text-gray-700 mb-2">
+                        <i class="fa-solid fa-gear text-red-500 mr-1"></i>
+                        Запчасти:
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="text-gray-500 border-b border-gray-200">
+                                    <th class="text-left py-1 font-medium">Наименование</th>
+                                    <th class="text-left py-1 font-medium">Артикул</th>
+                                    <th class="text-right py-1 font-medium">Цена</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for part in assessment.calculation.parts.all %}
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5">{{ part.name }}</td>
+                                    <td class="py-1.5 font-mono text-gray-500">{{ part.article }}</td>
+                                    <td class="py-1.5 text-right font-semibold">{{ part.price|floatformat:0 }} ₽</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Works Summary -->
+                {% if assessment.calculation.works.all %}
+                <div class="text-sm mt-3">
+                    <p class="font-semibold text-gray-700 mb-2">
+                        <i class="fa-solid fa-wrench text-red-500 mr-1"></i>
+                        Работы:
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="text-gray-500 border-b border-gray-200">
+                                    <th class="text-left py-1 font-medium">Работа</th>
+                                    <th class="text-left py-1 font-medium">Деталь</th>
+                                    <th class="text-right py-1 font-medium">Часы</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for work in assessment.calculation.works.all %}
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5">{{ work.name }}</td>
+                                    <td class="py-1.5 text-gray-500">{{ work.part_name }}</td>
+                                    <td class="py-1.5 text-right font-semibold">{{ work.hours }}ч</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Totals -->
+                <div class="border-t border-gray-200 pt-2 mt-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Запчасти:</span>
+                        <span class="font-semibold">{{ assessment.calculation.total_parts_cost|floatformat:0 }} ₽</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Работы:</span>
+                        <span class="font-semibold">{{ assessment.calculation.total_labor_cost|floatformat:0 }} ₽</span>
+                    </div>
+                    <div class="flex justify-between text-base font-bold text-red-600 mt-1">
+                        <span>Итого:</span>
+                        <span>{{ assessment.calculation.total_cost|floatformat:0 }} ₽</span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="bg-gray-50 rounded-lg p-4 text-center text-sm text-gray-500">
+                <i class="fa-solid fa-hourglass-half text-gray-400 mr-1"></i>
+                Расчёт в обработке...
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-16" data-testid="empty-state">
+        <div class="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fa-solid fa-folder-open text-4xl text-gray-300"></i>
+        </div>
+        <h3 class="font-heading text-lg font-bold text-gray-900 mb-2">Пока нет расчётов</h3>
+        <p class="text-gray-500 mb-6">Отправьте первую заявку<br>на оценку ущерба</p>
+        <a 
+            href="{% url 'damage_form' %}" 
+            data-testid="create-first-btn"
+            class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-all btn-active shadow-lg shadow-red-200"
+        >
+            <i class="fa-solid fa-plus"></i>
+            Создать заявку
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block bottom_nav %}
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 max-w-md mx-auto z-40" data-testid="bottom-nav">
+    <div class="flex justify-around items-center">
+        <a href="{% url 'damage_form' %}" class="flex flex-col items-center py-2 px-4 text-gray-400 hover:text-red-600 transition-colors" data-testid="nav-new">
+            <i class="fa-solid fa-plus-circle text-xl mb-1"></i>
+            <span class="text-xs font-medium">Новая</span>
+        </a>
+        <a href="{% url 'calculations' %}" class="flex flex-col items-center py-2 px-4 text-red-600" data-testid="nav-calculations">
+            <i class="fa-solid fa-list-check text-xl mb-1"></i>
+            <span class="text-xs font-medium">Расчёты</span>
+        </a>
+        <a href="{% url 'contacts' %}" class="flex flex-col items-center py-2 px-4 text-gray-400 hover:text-red-600 transition-colors" data-testid="nav-contacts">
+            <i class="fa-solid fa-phone text-xl mb-1"></i>
+            <span class="text-xs font-medium">Контакты</span>
+        </a>
+    </div>
+</nav>
+{% endblock %}
