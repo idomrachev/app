@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}Оценка ущерба{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#DC2626',
+                        'primary-hover': '#B91C1C',
+                    },
+                    fontFamily: {
+                        heading: ['Chivo', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-heading {
+            font-family: 'Chivo', sans-serif;
+        }
+        /* Hide scrollbar but allow scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Active state animation */
+        .btn-active:active {
+            transform: scale(0.95);
+        }
+        /* Input focus animation */
+        input:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-gray-50 font-sans text-gray-900">
+    <!-- Mobile wrapper -->
+    <div class="w-full max-w-md mx-auto bg-white min-h-screen shadow-xl relative flex flex-col">
+        {% block content %}{% endblock %}
+        
+        <!-- Bottom Navigation (shown on authenticated pages) -->
+        {% block bottom_nav %}{% endblock %}
+    </div>
+    
+    <!-- Toast Messages -->
+    {% if messages %}
+    <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
+        {% for message in messages %}
+        <div class="toast-message mb-2 p-4 rounded-lg shadow-lg flex items-center gap-3 animate-pulse
+            {% if message.tags == 'error' %}bg-red-100 text-red-800 border border-red-200
+            {% elif message.tags == 'success' %}bg-green-100 text-green-800 border border-green-200
+            {% else %}bg-gray-100 text-gray-800 border border-gray-200{% endif %}">
+            {% if message.tags == 'error' %}
+            <i class="fa-solid fa-circle-exclamation"></i>
+            {% elif message.tags == 'success' %}
+            <i class="fa-solid fa-circle-check"></i>
+            {% else %}
+            <i class="fa-solid fa-circle-info"></i>
+            {% endif %}
+            <span class="text-sm font-medium">{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(() => {
+            const container = document.getElementById('toast-container');
+            if (container) {
+                container.style.transition = 'opacity 0.5s';
+                container.style.opacity = '0';
+                setTimeout(() => container.remove(), 500);
+            }
+        }, 4000);
+    </script>
+    {% endif %}
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
