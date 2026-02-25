@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% block title %}Смета {{ assessment.vin }} - Оценка ущерба{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center gap-3">
+    <a href="{% url 'calculations' %}" class="text-gray-500 hover:text-red-600 transition-colors" data-testid="back-btn">
+        <i class="fa-solid fa-arrow-left text-xl"></i>
+    </a>
+    <div class="flex-1">
+        <h1 class="font-heading text-lg font-bold text-gray-900 tracking-tight" data-testid="detail-title">
+            Смета
+        </h1>
+        <p class="text-xs text-gray-500">{{ assessment.created_at|date:"d.m.Y H:i" }}</p>
+    </div>
+    <span class="px-3 py-1 text-xs font-semibold rounded-full
+        {% if assessment.status == 'completed' %}bg-green-100 text-green-700
+        {% elif assessment.status == 'processing' %}bg-yellow-100 text-yellow-700
+        {% else %}bg-gray-100 text-gray-600{% endif %}"
+        data-testid="status-badge">
+        {% if assessment.status == 'completed' %}Готово
+        {% elif assessment.status == 'processing' %}В работе
+        {% else %}Ожидает{% endif %}
+    </span>
+</header>
+
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto no-scrollbar px-4 py-6 pb-24">
+    <!-- VIN Card -->
+    <div class="bg-red-600 text-white rounded-xl p-4 mb-6 shadow-lg" data-testid="vin-card">
+        <p class="text-xs text-red-200 uppercase tracking-wide mb-1">VIN-номер</p>
+        <p class="font-mono text-xl font-bold tracking-wider">{{ assessment.vin }}</p>
+        {% if assessment.description %}
+        <p class="text-sm text-red-100 mt-2 line-clamp-2">{{ assessment.description }}</p>
+        {% endif %}
+    </div>
+    
+    {% if calculation %}
+    <!-- Parts Section -->
+    <div class="mb-6" data-testid="parts-section">
+        <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-gear text-red-600"></i>
+            </div>
+            <h2 class="font-heading text-lg font-bold text-gray-900">Запчасти</h2>
+            <span class="ml-auto text-sm font-semibold text-gray-500">{{ parts|length }} шт.</span>
+        </div>
+        
+        {% if parts %}
+        <div class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-sm" data-testid="parts-table">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100">
+                        <th class="text-left py-3 px-4 font-semibold text-gray-600">Наименование</th>
+                        <th class="text-left py-3 px-4 font-semibold text-gray-600">Артикул</th>
+                        <th class="text-right py-3 px-4 font-semibold text-gray-600">Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for part in parts %}
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors" data-testid="part-row-{{ forloop.counter }}">
+                        <td class="py-3 px-4">
+                            <p class="font-medium text-gray-900">{{ part.name }}</p>
+                            {% if part.quantity > 1 %}
+                            <p class="text-xs text-gray-500">× {{ part.quantity }} шт.</p>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4 font-mono text-xs text-gray-500">{{ part.article }}</td>
+                        <td class="py-3 px-4 text-right font-semibold text-gray-900">{{ part.price|floatformat:0 }} ₽</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-red-50">
+                        <td colspan="2" class="py-3 px-4 font-semibold text-gray-700">Итого запчасти:</td>
+                        <td class="py-3 px-4 text-right font-bold text-red-600 text-base">{{ calculation.total_parts_cost|floatformat:0 }} ₽</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% else %}
+        <div class="bg-gray-50 rounded-xl p-6 text-center">
+            <p class="text-gray-500">Список запчастей пуст</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Works Section -->
+    <div class="mb-6" data-testid="works-section">
+        <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-wrench text-red-600"></i>
+            </div>
+            <h2 class="font-heading text-lg font-bold text-gray-900">Ремонтные работы</h2>
+            <span class="ml-auto text-sm font-semibold text-gray-500">{{ works|length }} поз.</span>
+        </div>
+        
+        {% if works %}
+        <div class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-sm" data-testid="works-table">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100">
+                        <th class="text-left py-3 px-4 font-semibold text-gray-600">Работа</th>
+                        <th class="text-center py-3 px-4 font-semibold text-gray-600">Часы</th>
+                        <th class="text-right py-3 px-4 font-semibold text-gray-600">Ставка</th>
+                        <th class="text-right py-3 px-4 font-semibold text-gray-600">Сумма</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for work in works %}
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors" data-testid="work-row-{{ forloop.counter }}">
+                        <td class="py-3 px-4">
+                            <p class="font-medium text-gray-900">{{ work.name }}</p>
+                            {% if work.part_name %}
+                            <p class="text-xs text-gray-500">{{ work.part_name }}</p>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4 text-center font-mono text-gray-700">{{ work.hours }}ч</td>
+                        <td class="py-3 px-4 text-right text-gray-500">{{ work.rate_per_hour|floatformat:0 }} ₽/ч</td>
+                        <td class="py-3 px-4 text-right font-semibold text-gray-900">
+                            {% widthratio work.hours 1 work.rate_per_hour as work_total %}
+                            {{ work_total|floatformat:0 }} ₽
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-red-50">
+                        <td colspan="3" class="py-3 px-4 font-semibold text-gray-700">Итого работы:</td>
+                        <td class="py-3 px-4 text-right font-bold text-red-600 text-base">{{ calculation.total_labor_cost|floatformat:0 }} ₽</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% else %}
+        <div class="bg-gray-50 rounded-xl p-6 text-center">
+            <p class="text-gray-500">Список работ пуст</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Total Summary -->
+    <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl p-5 shadow-xl" data-testid="total-summary">
+        <div class="flex justify-between items-center mb-3">
+            <span class="text-gray-400">Запчасти</span>
+            <span class="font-semibold">{{ calculation.total_parts_cost|floatformat:0 }} ₽</span>
+        </div>
+        <div class="flex justify-between items-center mb-3">
+            <span class="text-gray-400">Работы</span>
+            <span class="font-semibold">{{ calculation.total_labor_cost|floatformat:0 }} ₽</span>
+        </div>
+        <div class="border-t border-gray-700 pt-3 mt-3">
+            <div class="flex justify-between items-center">
+                <span class="text-lg font-bold">ИТОГО</span>
+                <span class="text-2xl font-black text-red-400">{{ calculation.total_cost|floatformat:0 }} ₽</span>
+            </div>
+        </div>
+    </div>
+    
+    {% else %}
+    <!-- No Calculation Yet -->
+    <div class="text-center py-12" data-testid="pending-state">
+        <div class="w-20 h-20 mx-auto bg-yellow-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fa-solid fa-hourglass-half text-3xl text-yellow-600 animate-pulse"></i>
+        </div>
+        <h3 class="font-heading text-xl font-bold text-gray-900 mb-2">Расчёт в обработке</h3>
+        <p class="text-gray-500 mb-6">
+            Наши специалисты анализируют<br>ваши фотографии и готовят смету
+        </p>
+        <div class="inline-flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2 text-sm text-gray-600">
+            <i class="fa-solid fa-clock"></i>
+            Обычно занимает 1-2 часа
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Bottom Action -->
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 max-w-md mx-auto z-40">
+    <a href="{% url 'calculations' %}" 
+       class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
+       data-testid="back-to-list-btn">
+        <i class="fa-solid fa-list"></i>
+        Все расчёты
+    </a>
+</div>
+{% endblock %}
