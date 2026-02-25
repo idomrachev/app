@@ -134,7 +134,7 @@ def damage_form(request):
 
 @login_required_custom
 def calculations(request):
-    """Page 4: My calculations"""
+    """Page 4: My calculations list"""
     assessments = DamageAssessment.objects.filter(user=request.current_user).prefetch_related(
         'calculation', 'calculation__parts', 'calculation__works'
     )
@@ -142,10 +142,25 @@ def calculations(request):
 
 
 @login_required_custom
-def calculation_detail(request, calc_id):
+def calculation_detail_page(request, assessment_id):
+    """Page: Detailed calculation/estimate view"""
+    assessment = get_object_or_404(DamageAssessment, id=assessment_id, user=request.current_user)
+    calc = getattr(assessment, 'calculation', None)
+    
+    context = {
+        'assessment': assessment,
+        'calculation': calc,
+        'parts': calc.parts.all() if calc else [],
+        'works': calc.works.all() if calc else [],
+    }
+    return render(request, 'pages/calculation_detail.html', context)
+
+
+@login_required_custom
+def calculation_json(request, assessment_id):
     """API: Get calculation detail as JSON"""
     try:
-        assessment = DamageAssessment.objects.get(id=calc_id, user=request.current_user)
+        assessment = DamageAssessment.objects.get(id=assessment_id, user=request.current_user)
         calc = getattr(assessment, 'calculation', None)
         
         data = {
