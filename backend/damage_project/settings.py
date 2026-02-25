@@ -16,8 +16,8 @@ ALLOWED_HOSTS = ['*']
 
 # CSRF Settings for proxy environment
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.emergentagent.com',
-    'https://*.preview.emergentagent.com',
+    'https://auto-damage-portal.preview.emergentagent.com',
+    'https://auto-damage-portal.stage-preview.emergentagent.com',
     'http://localhost:3000',
     'http://localhost:8001',
 ]
