@@ -18,6 +18,7 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'https://auto-damage-portal.preview.emergentagent.com',
     'https://auto-damage-portal.stage-preview.emergentagent.com',
+    'https://auto-damage-portal.cluster-3.preview.emergentcf.cloud',
     'http://localhost:3000',
     'http://localhost:8001',
 ]
