@@ -13,10 +13,11 @@ urlpatterns = [
     path('verify/', views.verify_code, name='verify_code'),
     path('damage-form/', views.damage_form, name='damage_form'),
     path('calculations/', views.calculations, name='calculations'),
+    path('calculation/<uuid:assessment_id>/', views.calculation_detail_page, name='calculation_detail'),
     path('contacts/', views.contacts, name='contacts'),
     path('logout/', views.logout_view, name='logout'),
-    # API endpoints for calculations detail
-    path('api/calculation/<int:calc_id>/', views.calculation_detail, name='calculation_detail'),
+    # API endpoints
+    path('api/calculation/<uuid:assessment_id>/json/', views.calculation_json, name='calculation_json'),
 ]
 
 if settings.DEBUG:
